@@ -1,0 +1,11 @@
+//-
+    div.wrapper
+        p.hello Hello! #{name} dog name is #{dog}
+        span#yoo Yo man
+        img.dog(src='dog.jpg' alt =`dog ${dog}`)
+
+extends layout
+
+block content
+    h2 Sale ends in #{h.moment().endOf('day').fromNow()}
+    p.hello Hello
