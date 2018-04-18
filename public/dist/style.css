@@ -754,9 +754,13 @@ label {
       justify-content: space-around; }
 
 .store__action {
-  font-size: 10px; }
+  font-size: 10px;
+  position: relative;
+  z-index: 1;
+  padding-top: 5px;
+  padding-bottom: 15px; }
   .store__action svg {
-    width: 25px;
+    width: 40px;
     fill: white; }
   .store__action--edit a {
     border-bottom: 0; }
