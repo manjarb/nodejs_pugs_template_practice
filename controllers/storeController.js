@@ -1,5 +1,21 @@
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
+const multer = require('multer');
+// Save image to memory
+const multerOptions = {
+  storage: multer.memoryStorage(),
+  fileFilter(req, file, next) {
+      const isPhoto = file.mimetype.startsWith('image/');
+      if (isPhoto) {
+          next(null, true);
+      } else {
+          next({ message: 'File Type not Allowed' }, false);
+      }
+  }
+};
+// Save actual image
+const jimp = require('jimp');
+const uuid = require('uuid');
 
 /*exports.myMiddleware = (req, res, next) => {
     req.name = 'wes';
@@ -41,7 +57,7 @@ exports.createStore = async (req, res) => {
     // await store.save();
     const store = await (new Store(req.body)).save();
     req.flash('success', `Successfully Created ${store.name} Care to leave a review`);
-    res.redirect(`/store/${store.slug}`);
+    res.redirect(`/stores/${store.slug}`);
 };
 
 exports.getStores = async(req, res) => {
@@ -70,4 +86,30 @@ exports.updateStore = async(req, res) => {
     req.flash('success', `Success fully update <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View Store</a> `);
     res.redirect(`/stores/${store._id}/edit`);
     // redirect them the store and tell them it worked
+};
+
+exports.upload = multer(multerOptions).single('photo');
+
+exports.resize = async(req, res, next) => {
+    // if check no new file to resize
+    if(!req.file) {
+        next(); // skip to next middle ware
+        return;
+    }
+    const extension = req.file.mimetype.split('/')[1];
+    req.body.photo = `${uuid.v4()}.${extension}`;
+    // now we resize
+    const photo = await jimp.read(req.file.buffer);
+    await photo.resize(800, jimp.AUTO);
+    await photo.write(`./public/uploads/${req.body.photo}`);
+    // once we have written the photo to our file system, keep going
+    next();
+};
+
+exports.getStoreBySlug = async(req, res, next) => {
+  const store = await Store.findOne({ slug: req.params.slug });
+  if(!store) {
+      return next();
+  }
+  res.render("store", { store, title: store.name });
 };
