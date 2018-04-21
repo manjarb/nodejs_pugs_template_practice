@@ -9,6 +9,7 @@ router.get('/', storeController.homePage);
 
 router.get('/stores', catchErrors(storeController.getStores));
 router.get('/stores/:id/edit', catchErrors(storeController.editStores));
+router.get('/store/:slug', catchErrors(storeController.getStoreBySlug));
 
 router.get('/add', storeController.addStore);
 router.post('/add',
@@ -27,6 +28,7 @@ router.get('/reverse/:name', (reg, res) => {
   res.send(reverse);
 });
 
-router.get('/store/:slug', catchErrors(storeController.getStoreBySlug));
+router.get('/tags', catchErrors(storeController.getStoresByTag));
+router.get('/tags/:tag*?', catchErrors(storeController.getStoresByTag));
 
 module.exports = router;
