@@ -1,9 +1,11 @@
 # Project
 .idea
+haters/
 
 # Node
 node_modules
 variables.env
+variables.env.now
 
 # macOS
 .DS_Store
